@@ -1,0 +1,57 @@
+#LIBRARIES 
+if(!require(ggplot2)) install.packages("ggplot2")
+if(!require(dplyr)) install.packages("dplyr")
+if(!require(tidyr)) install.packages("tidyr")
+
+print("Santhiya Joe Harson J - 23BAD102")
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+student_data <- read.csv("D:/1)COLLAGE/AI&DS/SEM 6/EDA/LAB/E1/1.student_performance.csv")
+
+# DATA CLEANING - (Remove rows with missing test scores and calculate Average)
+
+student_data <- student_data %>%
+  filter(!is.na(Internal_Test1), !is.na(Internal_Test2)) %>%
+  mutate(Average_Marks = (Internal_Test1 + Internal_Test2) / 2)
+
+# 1: Subject-wise Average Marks ---
+subject_avg <- student_data %>%
+  group_by(Subject) %>%
+  summarise(Avg_Marks = mean(Average_Marks))
+
+ggplot(subject_avg, aes(x = Subject, y = Avg_Marks)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Subject-wise Average Marks",
+       x = "Subject",
+       y = "Average Marks") +
+  theme_minimal()
+
+# 2: Performance Trend
+trend_data <- student_data %>%
+  select(Student_ID, Subject, Internal_Test1, Internal_Test2) %>%
+  tidyr::pivot_longer(
+    cols = c(Internal_Test1, Internal_Test2),
+    names_to = "Test",
+    values_to = "Marks"
+  )
+
+ggplot(trend_data, aes(x = Test, y = Marks, group = Subject, color = Subject)) +
+  geom_line() +
+  labs(title = "Performance Trend Across Internal Tests",
+       x = "Test",
+       y = "Marks") +
+  theme_minimal()
+
+# 3: Final Grade Distribution
+grade_data <- student_data %>%
+  group_by(Final_Grade) %>%
+  summarise(Count = n())
+
+ggplot(grade_data, aes(x = "", y = Count, fill = Final_Grade)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  labs(title = "Final Grade Distribution") +
+  theme_void()
