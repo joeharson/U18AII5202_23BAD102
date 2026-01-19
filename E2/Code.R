@@ -5,8 +5,7 @@ library(dplyr)
 library(lubridate)
 
 # Load the data - NOTE: Update this path to where your file is located
-df <- read.csv("D:/Documents/SEM6/EDA/LAB/EX2/2.ecommerce_transactions.csv")
-
+df <- read.csv("D:/1)COLLAGE/AI&DS/SEM 6/EDA/LAB/E2/2.ecommerce_transactions.csv")
 # Convert Transaction_Date to Date format
 df$Transaction_Date <- as.Date(df$Transaction_Date)
 
